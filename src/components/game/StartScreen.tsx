@@ -6,7 +6,7 @@ import { Settings, Info, Play } from "lucide-react";
 import AccessibilityWarning from "./AccessibilityWarning";
 
 const StartScreen: React.FC = () => {
-  const { setScene } = useGame();
+  const { setScene, playGameSound } = useGame();
   const [showWarning, setShowWarning] = useState(false);
   const [cloudiPosition, setCloudiPosition] = useState(0);
 
@@ -19,7 +19,13 @@ const StartScreen: React.FC = () => {
   }, []);
 
   const handleStartGame = () => {
+    playGameSound("collect");
     setShowWarning(true);
+  };
+
+  const handleNavigate = (scene: "instructions" | "settings") => {
+    playGameSound("collect");
+    setScene(scene);
   };
 
   return (
@@ -74,7 +80,7 @@ const StartScreen: React.FC = () => {
         </Button>
         
         <Button 
-          onClick={() => setScene("instructions")}
+          onClick={() => handleNavigate("instructions")}
           className="game-button w-full"
         >
           <Info size={20} />
@@ -82,7 +88,7 @@ const StartScreen: React.FC = () => {
         </Button>
         
         <Button 
-          onClick={() => setScene("settings")}
+          onClick={() => handleNavigate("settings")}
           className="game-button w-full"
         >
           <Settings size={20} />
@@ -99,10 +105,12 @@ const StartScreen: React.FC = () => {
       {showWarning && (
         <AccessibilityWarning 
           onContinue={() => {
+            playGameSound("collect");
             setShowWarning(false);
             setScene("game");
           }}
           onEnableMode={() => {
+            playGameSound("collect");
             setShowWarning(false);
             // Set accessibility mode on
             setScene("game");

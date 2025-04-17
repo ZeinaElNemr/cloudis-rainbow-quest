@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { playSound, playBackgroundMusic, pauseBackgroundMusic, setMusicVolume, setSoundEffectsVolume } from "../utils/soundUtils";
 
 type GameScene = "start" | "instructions" | "settings" | "game" | "gameOver" | "credits";
 
@@ -22,6 +23,7 @@ type GameContextType = {
   isGamePaused: boolean;
   setIsGamePaused: (paused: boolean) => void;
   resetGame: () => void;
+  playGameSound: (sound: string) => void;
 };
 
 const defaultSettings: SettingsType = {
@@ -69,6 +71,38 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, [scene, isGamePaused]);
 
+  // Handle scene changes and associated sounds
+  useEffect(() => {
+    if (settings.sound) {
+      if (scene === "game") {
+        playBackgroundMusic();
+      } else if (scene === "gameOver") {
+        playSound("gameOver");
+        pauseBackgroundMusic();
+      }
+    }
+  }, [scene, settings.sound]);
+
+  // Pause and resume music based on game pause state
+  useEffect(() => {
+    if (scene === "game" && settings.sound) {
+      if (isGamePaused) {
+        pauseBackgroundMusic();
+      } else {
+        playBackgroundMusic();
+      }
+    }
+  }, [isGamePaused, scene, settings.sound]);
+
+  // Handle sound settings changes
+  useEffect(() => {
+    if (!settings.sound) {
+      pauseBackgroundMusic();
+    } else if (scene === "game" && !isGamePaused) {
+      playBackgroundMusic();
+    }
+  }, [settings.sound, scene, isGamePaused]);
+
   const updateSettings = (newSettings: Partial<SettingsType>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
   };
@@ -77,6 +111,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setRainbowPieces(0);
     setGameTime(0);
     setIsGamePaused(false);
+  };
+
+  const playGameSound = (sound: string) => {
+    if (settings.sound) {
+      playSound(sound);
+    }
   };
 
   return (
@@ -93,6 +133,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isGamePaused,
         setIsGamePaused,
         resetGame,
+        playGameSound,
       }}
     >
       {children}

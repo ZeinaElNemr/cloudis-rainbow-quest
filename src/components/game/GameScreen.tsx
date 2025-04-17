@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useGame } from "@/contexts/GameContext";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,8 @@ const GameScreen: React.FC = () => {
     totalRainbowPieces,
     settings,
     isGamePaused,
-    setIsGamePaused
+    setIsGamePaused,
+    playGameSound
   } = useGame();
   
   const [gameEntities, setGameEntities] = useState<GameEntity[]>([]);
@@ -93,8 +95,9 @@ const GameScreen: React.FC = () => {
   useEffect(() => {
     if (rainbowPieces >= totalRainbowPieces) {
       setScene("gameOver");
+      playGameSound("victory");
     }
-  }, [rainbowPieces, totalRainbowPieces, setScene]);
+  }, [rainbowPieces, totalRainbowPieces, setScene, playGameSound]);
   
   const initializeGame = () => {
     // Create rainbow pieces
@@ -236,21 +239,26 @@ const GameScreen: React.FC = () => {
           // Fix: update number directly instead of using a callback function
           setRainbowPieces(rainbowPieces + 1);
           
-          // Play sound if enabled
-          if (settings.sound) {
-            // playSound('collect');
-          }
+          // Play sound
+          playGameSound("collect");
           
           // Vibrate if enabled
           if (settings.vibration && navigator.vibrate) {
             navigator.vibrate(100);
           }
         } else if (entity.type === 'storm') {
+          // Play storm sound
+          playGameSound("storm");
+          
           // Lose the game or reduce health
           // For now, just go back to the start screen
           setScene("start");
         } else if (entity.type === 'sunshine') {
           entitiesToRemove.push(entity.type);
+          
+          // Play powerup sound
+          playGameSound("sunshine");
+          
           setBoosted(true);
           
           // Boost lasts for 3 seconds
@@ -258,6 +266,9 @@ const GameScreen: React.FC = () => {
             setBoosted(false);
           }, 3000);
         } else if (entity.type === 'wind') {
+          // Play wind sound
+          playGameSound("wind");
+          
           // Increase Cloudi's velocity in a random direction
           setCloudi(prev => ({
             ...prev,

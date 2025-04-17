@@ -5,12 +5,38 @@ import { Button } from "@/components/ui/button";
 import { Music, Volume2, VolumeX, SunMedium, Vibrate, Sparkles, ArrowLeft } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
+import { setMusicVolume, setSoundEffectsVolume } from "@/utils/soundUtils";
 
 const SettingsScreen: React.FC = () => {
-  const { settings, updateSettings, setScene } = useGame();
+  const { settings, updateSettings, setScene, playGameSound } = useGame();
+  const [musicVolume, setMusicVol] = React.useState(50);
+  const [soundVolume, setSoundVol] = React.useState(50);
 
   const handleBrightnessChange = (value: number[]) => {
     updateSettings({ brightness: value[0] });
+  };
+
+  const handleMusicVolumeChange = (value: number[]) => {
+    setMusicVol(value[0]);
+    setMusicVolume(value[0] / 100);
+  };
+
+  const handleSoundVolumeChange = (value: number[]) => {
+    setSoundVol(value[0]);
+    setSoundEffectsVolume(value[0] / 100);
+  };
+
+  const handleSoundToggle = (checked: boolean) => {
+    if (checked) {
+      // Play a test sound when enabling sounds
+      setTimeout(() => playGameSound("collect"), 100);
+    }
+    updateSettings({ sound: checked });
+  };
+
+  const handleBack = () => {
+    playGameSound("collect");
+    setScene("start");
   };
 
   return (
@@ -20,7 +46,7 @@ const SettingsScreen: React.FC = () => {
           <ArrowLeft 
             size={24} 
             className="cursor-pointer text-cloud-outline hover:text-cloud-outline/70" 
-            onClick={() => setScene("start")}
+            onClick={handleBack}
           />
           <h1 className="text-2xl font-bold text-cloud-outline">Settings</h1>
         </div>
@@ -34,9 +60,45 @@ const SettingsScreen: React.FC = () => {
             </div>
             <Switch 
               checked={settings.sound} 
-              onCheckedChange={(checked) => updateSettings({ sound: checked })} 
+              onCheckedChange={handleSoundToggle} 
             />
           </div>
+          
+          {/* Music Volume (only shown if sound is enabled) */}
+          {settings.sound && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <Music size={24} className="text-cloud-outline" />
+                <span className="font-medium">Music Volume</span>
+              </div>
+              <Slider
+                value={[musicVolume]}
+                min={0}
+                max={100}
+                step={1}
+                className="settings-slider"
+                onValueChange={handleMusicVolumeChange}
+              />
+            </div>
+          )}
+          
+          {/* Sound Effects Volume (only shown if sound is enabled) */}
+          {settings.sound && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <Volume2 size={24} className="text-cloud-outline" />
+                <span className="font-medium">Sound Effects Volume</span>
+              </div>
+              <Slider
+                value={[soundVolume]}
+                min={0}
+                max={100}
+                step={1}
+                className="settings-slider"
+                onValueChange={handleSoundVolumeChange}
+              />
+            </div>
+          )}
           
           {/* Brightness */}
           <div className="space-y-2">
@@ -85,7 +147,7 @@ const SettingsScreen: React.FC = () => {
         
         <div className="flex justify-center mt-10">
           <Button 
-            onClick={() => setScene("start")}
+            onClick={handleBack}
             className="game-button"
           >
             Save Settings

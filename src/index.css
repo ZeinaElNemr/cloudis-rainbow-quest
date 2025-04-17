@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -97,5 +98,36 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .game-button {
+    @apply bg-game-button hover:bg-game-buttonHover text-white font-bold py-3 px-6 rounded-full 
+           shadow-md transition-all duration-200 transform hover:scale-105 active:scale-95
+           flex items-center justify-center gap-2;
+  }
+  
+  .settings-slider {
+    @apply appearance-none w-full h-2 rounded-full bg-sky-light opacity-70;
+  }
+  
+  .settings-slider::-webkit-slider-thumb {
+    @apply appearance-none w-5 h-5 rounded-full bg-cloud cursor-pointer;
+  }
+  
+  .rainbow-progress {
+    @apply h-4 rounded-full overflow-hidden relative;
+    background: linear-gradient(
+      to right,
+      #FF5E5B var(--red-percent, 0%), 
+      #FFB16C var(--red-percent, 0%) var(--orange-percent, 0%), 
+      #FFDE59 var(--orange-percent, 0%) var(--yellow-percent, 0%), 
+      #8CD867 var(--yellow-percent, 0%) var(--green-percent, 0%), 
+      #4CB9E7 var(--green-percent, 0%) var(--blue-percent, 0%), 
+      #6A7FDB var(--blue-percent, 0%) var(--indigo-percent, 0%), 
+      #9B5DE5 var(--indigo-percent, 0%) var(--violet-percent, 0%), 
+      #d0d0d0 var(--violet-percent, 0%) 100%
+    );
   }
 }

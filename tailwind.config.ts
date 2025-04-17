@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,35 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Game-specific colors
+				cloud: {
+					DEFAULT: '#A6DCEF', // Cloudi's main color
+					dark: '#7CAACC', // Cloudi's shadow
+					stormi: '#465362', // Stormi cloud color
+					outline: '#33415C', // Cloud outline
+				},
+				rainbow: {
+					red: '#FF5E5B',
+					orange: '#FFB16C',
+					yellow: '#FFDE59',
+					green: '#8CD867',
+					blue: '#4CB9E7',
+					indigo: '#6A7FDB',
+					violet: '#9B5DE5',
+				},
+				sky: {
+					light: '#C1E8FF', // Day sky
+					dark: '#33415C', // Stormy sky
+					sunset: '#FFB16C', // Sunset effect
+				},
+				game: {
+					sunshine: '#FFDE59', // Sunshine orb
+					lightning: '#F9DC5C', // Lightning flash
+					wind: '#E2EAFC', // Wind current
+					button: '#A6DCEF', // Button background
+					buttonHover: '#7CAACC', // Button hover state
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +113,36 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' },
+				},
+				'spin-slow': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg)' },
+				},
+				'pulse-soft': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.7' },
+				},
+				'sparkle': {
+					'0%, 100%': { opacity: '0.5', transform: 'scale(1)' },
+					'50%': { opacity: '1', transform: 'scale(1.2)' },
+				},
+				'rainbow-appear': {
+					'0%': { opacity: '0', transform: 'scale(0.8)' },
+					'100%': { opacity: '1', transform: 'scale(1)' },
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 3s ease-in-out infinite',
+				'spin-slow': 'spin-slow 8s linear infinite',
+				'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
+				'sparkle': 'sparkle 2s ease-in-out infinite',
+				'rainbow-appear': 'rainbow-appear 0.5s ease-out forwards',
 			}
 		}
 	},

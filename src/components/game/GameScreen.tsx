@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useGame } from "@/contexts/GameContext";
 import { Button } from "@/components/ui/button";
@@ -28,6 +27,7 @@ const CLOUDI_SPEED = 5;
 const BOOST_MULTIPLIER = 1.5;
 
 const GameScreen: React.FC = () => {
+  
   const { 
     setScene, 
     rainbowPieces, 
@@ -159,6 +159,11 @@ const GameScreen: React.FC = () => {
   
   const handleKeyDown = (e: KeyboardEvent) => {
     keysPressed.current[e.key] = true;
+    
+    // Prevent default browser behavior for arrow keys
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)) {
+      e.preventDefault();
+    }
   };
   
   const handleKeyUp = (e: KeyboardEvent) => {
@@ -228,7 +233,8 @@ const GameScreen: React.FC = () => {
         // Handle collision based on entity type
         if (entity.type.startsWith('rainbow')) {
           entitiesToRemove.push(entity.type);
-          setRainbowPieces(prev => prev + 1);
+          // Fix: update number directly instead of using a callback function
+          setRainbowPieces(rainbowPieces + 1);
           
           // Play sound if enabled
           if (settings.sound) {

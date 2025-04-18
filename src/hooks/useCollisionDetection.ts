@@ -27,7 +27,7 @@ export const useCollisionDetection = (
         cloudi.y + cloudi.height > entity.y
       ) {
         if (entity.type.startsWith('rainbow')) {
-          entitiesToRemove.push(entity.type);
+          entitiesToRemove.push(entity.id);
           setRainbowPieces(rainbowPieces + 1);
           playGameSound("collect");
           
@@ -36,9 +36,9 @@ export const useCollisionDetection = (
           }
         } else if (entity.type === 'storm') {
           playGameSound("storm");
-          setScene("start");
+          setScene("gameOver");
         } else if (entity.type === 'sunshine') {
-          entitiesToRemove.push(entity.type);
+          entitiesToRemove.push(entity.id);
           playGameSound("sunshine");
           setBoosted(true);
           
@@ -50,15 +50,13 @@ export const useCollisionDetection = (
           
           // We can't modify cloudi directly here because setCloudi isn't passed in
           // Instead, we'll just make the entity disappear for now
-          entitiesToRemove.push(entity.type);
+          entitiesToRemove.push(entity.id);
         }
       }
     });
     
     if (entitiesToRemove.length > 0) {
-      setGameEntities(prevEntities => 
-        prevEntities.filter(entity => !entitiesToRemove.includes(entity.type))
-      );
+      setGameEntities(gameEntities.filter(entity => !entitiesToRemove.includes(entity.id)));
     }
   };
 

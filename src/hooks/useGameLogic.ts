@@ -14,6 +14,7 @@ export const useGameLogic = () => {
 
   const [gameEntities, setGameEntities] = useState<GameEntity[]>([]);
   const [cloudi, setCloudi] = useState<CloudiEntity>({
+    id: 'cloudi',
     x: window.innerWidth / 2 - CLOUDI_SIZE / 2,
     y: window.innerHeight / 2 - CLOUDI_SIZE / 2,
     width: CLOUDI_SIZE,

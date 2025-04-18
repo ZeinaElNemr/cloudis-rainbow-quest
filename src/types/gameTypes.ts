@@ -1,5 +1,6 @@
 
 export interface GameEntity {
+  id: string;
   x: number;
   y: number;
   width: number;

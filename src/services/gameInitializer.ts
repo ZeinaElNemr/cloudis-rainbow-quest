@@ -1,52 +1,73 @@
 
-import { GameEntity, RAINBOW_PIECE_SIZE, STORM_SIZE, SUNSHINE_SIZE, WIND_SIZE } from '@/types/gameTypes';
+import { GameEntity, RAINBOW_PIECE_SIZE, STORM_SIZE, SUNSHINE_SIZE, WIND_SIZE } from "@/types/gameTypes";
 
 export const initializeGame = (totalRainbowPieces: number): GameEntity[] => {
-  const newEntities: GameEntity[] = [];
+  const entities: GameEntity[] = [];
+  const screenWidth = window.innerWidth;
+  const screenHeight = window.innerHeight;
   
   // Add rainbow pieces
   for (let i = 0; i < totalRainbowPieces; i++) {
-    newEntities.push({
-      x: Math.random() * (window.innerWidth - RAINBOW_PIECE_SIZE),
-      y: Math.random() * (window.innerHeight - RAINBOW_PIECE_SIZE),
+    const x = Math.random() * (screenWidth - RAINBOW_PIECE_SIZE);
+    const y = Math.random() * (screenHeight - RAINBOW_PIECE_SIZE);
+    
+    entities.push({
+      id: `rainbow-${i}`,
+      x,
+      y,
       width: RAINBOW_PIECE_SIZE,
       height: RAINBOW_PIECE_SIZE,
-      type: `rainbow-${i}`,
+      type: `rainbow-${i}`
     });
   }
   
-  // Add storms
-  for (let i = 0; i < 3; i++) {
-    newEntities.push({
-      x: Math.random() * (window.innerWidth - STORM_SIZE),
-      y: Math.random() * (window.innerHeight - STORM_SIZE),
+  // Add obstacles (storms)
+  const numStorms = 3;
+  for (let i = 0; i < numStorms; i++) {
+    const x = Math.random() * (screenWidth - STORM_SIZE);
+    const y = Math.random() * (screenHeight - STORM_SIZE);
+    
+    entities.push({
+      id: `storm-${i}`,
+      x,
+      y,
       width: STORM_SIZE,
       height: STORM_SIZE,
-      type: 'storm',
+      type: 'storm'
     });
   }
   
-  // Add sunshine
-  for (let i = 0; i < 2; i++) {
-    newEntities.push({
-      x: Math.random() * (window.innerWidth - SUNSHINE_SIZE),
-      y: Math.random() * (window.innerHeight - SUNSHINE_SIZE),
+  // Add power-ups (sunshine)
+  const numSunshine = 2;
+  for (let i = 0; i < numSunshine; i++) {
+    const x = Math.random() * (screenWidth - SUNSHINE_SIZE);
+    const y = Math.random() * (screenHeight - SUNSHINE_SIZE);
+    
+    entities.push({
+      id: `sunshine-${i}`,
+      x,
+      y,
       width: SUNSHINE_SIZE,
       height: SUNSHINE_SIZE,
-      type: 'sunshine',
+      type: 'sunshine'
     });
   }
   
   // Add wind currents
-  for (let i = 0; i < 2; i++) {
-    newEntities.push({
-      x: Math.random() * (window.innerWidth - WIND_SIZE),
-      y: Math.random() * (window.innerHeight - WIND_SIZE),
+  const numWinds = 2;
+  for (let i = 0; i < numWinds; i++) {
+    const x = Math.random() * (screenWidth - WIND_SIZE);
+    const y = Math.random() * (screenHeight - WIND_SIZE);
+    
+    entities.push({
+      id: `wind-${i}`,
+      x,
+      y,
       width: WIND_SIZE,
       height: WIND_SIZE,
-      type: 'wind',
+      type: 'wind'
     });
   }
   
-  return newEntities;
+  return entities;
 };

@@ -18,15 +18,20 @@ export const useCollisionDetection = (
 
   const checkCollisions = () => {
     const entitiesToRemove: string[] = [];
+    let shouldEndGame = false;
     
     gameEntities.forEach(entity => {
+      // Check for collision between cloudi and this entity
       if (
         cloudi.x < entity.x + entity.width &&
         cloudi.x + cloudi.width > entity.x &&
         cloudi.y < entity.y + entity.height &&
         cloudi.y + cloudi.height > entity.y
       ) {
+        console.log(`Collision detected with entity type: ${entity.type}`);
+        
         if (entity.type.startsWith('rainbow')) {
+          console.log(`Rainbow collision - id: ${entity.id}`);
           entitiesToRemove.push(entity.id);
           setRainbowPieces(rainbowPieces + 1);
           playGameSound("collect");
@@ -35,9 +40,11 @@ export const useCollisionDetection = (
             navigator.vibrate(100);
           }
         } else if (entity.type === 'storm') {
+          console.log('Storm collision - ending game');
           playGameSound("storm");
-          setScene("gameOver");
+          shouldEndGame = true;
         } else if (entity.type === 'sunshine') {
+          console.log(`Sunshine collision - id: ${entity.id}`);
           entitiesToRemove.push(entity.id);
           playGameSound("sunshine");
           setBoosted(true);
@@ -46,17 +53,21 @@ export const useCollisionDetection = (
             setBoosted(false);
           }, 3000);
         } else if (entity.type === 'wind') {
+          console.log(`Wind collision - id: ${entity.id}`);
           playGameSound("wind");
-          
-          // We can't modify cloudi directly here because setCloudi isn't passed in
-          // Instead, we'll just make the entity disappear for now
           entitiesToRemove.push(entity.id);
         }
       }
     });
     
     if (entitiesToRemove.length > 0) {
+      console.log(`Removing entities with ids:`, entitiesToRemove);
       setGameEntities(gameEntities.filter(entity => !entitiesToRemove.includes(entity.id)));
+    }
+    
+    if (shouldEndGame) {
+      console.log('Setting scene to gameOver');
+      setScene("gameOver");
     }
   };
 

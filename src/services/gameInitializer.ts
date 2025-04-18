@@ -69,5 +69,6 @@ export const initializeGame = (totalRainbowPieces: number): GameEntity[] => {
     });
   }
   
+  console.log('Game initialized with entities:', entities);
   return entities;
 };

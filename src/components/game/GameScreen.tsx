@@ -41,6 +41,7 @@ const GameScreen: React.FC = () => {
   const animationRef = useRef<number>(0);
   
   useEffect(() => {
+    console.log('GameScreen: Initializing game');
     // Initialize the game
     setGameEntities(initializeGame(totalRainbowPieces));
     
@@ -67,6 +68,7 @@ const GameScreen: React.FC = () => {
   }, [isGamePaused]);
   
   useEffect(() => {
+    console.log(`GameScreen: Rainbow pieces ${rainbowPieces}/${totalRainbowPieces}`);
     if (rainbowPieces >= totalRainbowPieces) {
       setScene("gameOver");
       playGameSound("victory");

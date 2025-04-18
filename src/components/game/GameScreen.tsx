@@ -1,11 +1,10 @@
-
 import React, { useEffect, useRef } from "react";
 import { useGame } from "@/contexts/GameContext";
 import GameCanvas from "./GameCanvas";
 import GameControls from "./GameControls";
 import { useGameLogic } from "@/hooks/useGameLogic";
 import { initializeGame } from "@/services/gameInitializer";
-import { CLOUDI_SPEED, BOOST_MULTIPLIER } from "@/types/gameTypes";
+import { useCollisionDetection } from "@/hooks/useCollisionDetection";
 
 const GameScreen: React.FC = () => {
   const { 
@@ -29,6 +28,13 @@ const GameScreen: React.FC = () => {
     handleKeyDown,
     handleKeyUp
   } = useGameLogic();
+  
+  const { checkCollisions } = useCollisionDetection(
+    cloudi,
+    gameEntities,
+    setBoosted,
+    setGameEntities
+  );
   
   const animationRef = useRef<number>(0);
   
@@ -84,12 +90,12 @@ const GameScreen: React.FC = () => {
     if (keysPressed.current['ArrowUp']) dy -= 1;
     if (keysPressed.current['ArrowDown']) dy += 1;
     
-    // Normalize diagonal movement
-    if (dx !== 0 && dy !== 0) {
-      dx *= 0.7071;
-      dy *= 0.7071;
-    }
-    
+    // Update position and check for collisions
+    updateCloudiPosition(dx, dy);
+    checkCollisions();
+  };
+  
+  const updateCloudiPosition = (dx: number, dy: number) => {
     // Apply speed and boost if active
     const speed = boosted ? CLOUDI_SPEED * BOOST_MULTIPLIER : CLOUDI_SPEED;
     dx *= speed;
@@ -107,58 +113,6 @@ const GameScreen: React.FC = () => {
         velocity: { x: dx, y: dy }
       };
     });
-    
-    checkCollisions();
-  };
-  
-  const checkCollisions = () => {
-    const entitiesToRemove: string[] = [];
-    
-    gameEntities.forEach(entity => {
-      if (
-        cloudi.x < entity.x + entity.width &&
-        cloudi.x + cloudi.width > entity.x &&
-        cloudi.y < entity.y + entity.height &&
-        cloudi.y + cloudi.height > entity.y
-      ) {
-        if (entity.type.startsWith('rainbow')) {
-          entitiesToRemove.push(entity.type);
-          setRainbowPieces(rainbowPieces + 1);
-          playGameSound("collect");
-          
-          if (settings.vibration && navigator.vibrate) {
-            navigator.vibrate(100);
-          }
-        } else if (entity.type === 'storm') {
-          playGameSound("storm");
-          setScene("start");
-        } else if (entity.type === 'sunshine') {
-          entitiesToRemove.push(entity.type);
-          playGameSound("sunshine");
-          setBoosted(true);
-          
-          setTimeout(() => {
-            setBoosted(false);
-          }, 3000);
-        } else if (entity.type === 'wind') {
-          playGameSound("wind");
-          
-          setCloudi(prev => ({
-            ...prev,
-            velocity: {
-              x: prev.velocity.x * 1.2,
-              y: prev.velocity.y * 1.2
-            }
-          }));
-        }
-      }
-    });
-    
-    if (entitiesToRemove.length > 0) {
-      setGameEntities(prev => 
-        prev.filter(entity => !entitiesToRemove.includes(entity.type))
-      );
-    }
   };
 
   return (

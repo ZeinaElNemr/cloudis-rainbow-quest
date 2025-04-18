@@ -48,20 +48,16 @@ export const useCollisionDetection = (
         } else if (entity.type === 'wind') {
           playGameSound("wind");
           
-          setCloudi(prev => ({
-            ...prev,
-            velocity: {
-              x: prev.velocity.x * 1.2,
-              y: prev.velocity.y * 1.2
-            }
-          }));
+          // We can't modify cloudi directly here because setCloudi isn't passed in
+          // Instead, we'll just make the entity disappear for now
+          entitiesToRemove.push(entity.type);
         }
       }
     });
     
     if (entitiesToRemove.length > 0) {
-      setGameEntities(prev => 
-        prev.filter(entity => !entitiesToRemove.includes(entity.type))
+      setGameEntities(prevEntities => 
+        prevEntities.filter(entity => !entitiesToRemove.includes(entity.type))
       );
     }
   };

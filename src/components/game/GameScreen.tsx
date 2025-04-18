@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from "react";
 import { useGame } from "@/contexts/GameContext";
 import GameCanvas from "./GameCanvas";
@@ -5,6 +6,7 @@ import GameControls from "./GameControls";
 import { useGameLogic } from "@/hooks/useGameLogic";
 import { initializeGame } from "@/services/gameInitializer";
 import { useCollisionDetection } from "@/hooks/useCollisionDetection";
+import { CLOUDI_SPEED, BOOST_MULTIPLIER } from "@/types/gameTypes";
 
 const GameScreen: React.FC = () => {
   const { 

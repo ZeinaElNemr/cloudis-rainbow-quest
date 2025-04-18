@@ -19,6 +19,8 @@ export const initializeSounds = () => {
     wind: '/sounds/wind.mp3',
     gameOver: '/sounds/game-over.mp3',
     victory: '/sounds/victory.mp3',
+    click: '/sounds/click.mp3',
+    start: '/sounds/start.mp3'
   };
   
   // Preload all sound effects
@@ -70,8 +72,9 @@ export const setMusicVolume = (volume: number) => {
 
 // Set sound effects volume
 export const setSoundEffectsVolume = (volume: number) => {
+  const normalizedVolume = Math.max(0, Math.min(1, volume));
   Object.values(soundEffects).forEach(sound => {
-    sound.volume = Math.max(0, Math.min(1, volume));
+    sound.volume = normalizedVolume;
   });
 };
 

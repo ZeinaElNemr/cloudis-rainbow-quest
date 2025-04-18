@@ -6,8 +6,22 @@ import { initializeSounds } from "@/utils/soundUtils";
 
 const Index = () => {
   useEffect(() => {
-    // Initialize all game sounds when the app loads
-    initializeSounds();
+    const loadGameAssets = async () => {
+      // Initialize all game sounds when the app loads
+      await initializeSounds();
+      
+      // Preload images for smoother gameplay
+      const imageUrls = [
+        // Add any image URLs you want to preload
+      ];
+      
+      imageUrls.forEach(url => {
+        const img = new Image();
+        img.src = url;
+      });
+    };
+    
+    loadGameAssets();
   }, []);
 
   return (

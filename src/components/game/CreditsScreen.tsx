@@ -16,23 +16,25 @@ const CreditsScreen: React.FC = () => {
         
         <div className="space-y-6 text-center mb-10">
           <div>
-            <h2 className="text-xl font-semibold text-cloud-outline">Created by</h2>
+            <h2 className="text-xl font-semibold text-cloud-outline">Game Creator</h2>
             <p className="text-2xl font-bold">Zeina ElNemr</p>
           </div>
           
           <div>
-            <h2 className="text-xl font-semibold text-cloud-outline">Directed by</h2>
+            <h2 className="text-xl font-semibold text-cloud-outline">Art & Design</h2>
             <p className="text-2xl font-bold">Zeina ElNemr</p>
           </div>
           
           <div>
-            <h2 className="text-xl font-semibold text-cloud-outline">Designed by</h2>
+            <h2 className="text-xl font-semibold text-cloud-outline">Development</h2>
             <p className="text-2xl font-bold">Zeina ElNemr</p>
+            <p className="text-sm mt-1 text-muted-foreground">A game made with ❤️ and ☁️</p>
           </div>
           
           <div>
             <h2 className="text-xl font-semibold text-cloud-outline">Special Thanks</h2>
-            <p className="text-lg">Everyone who believes in magic and clouds! ☁️🌈</p>
+            <p className="text-lg">To all the dreamers who believe in the magic of clouds!</p>
+            <p className="text-lg">And to everyone who helped test the game 🌈</p>
           </div>
         </div>
         

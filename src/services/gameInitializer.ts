@@ -6,6 +6,8 @@ export const initializeGame = (totalRainbowPieces: number): GameEntity[] => {
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
   
+  console.log(`Initializing game with ${totalRainbowPieces} rainbow pieces`);
+  
   // Add rainbow pieces
   for (let i = 0; i < totalRainbowPieces; i++) {
     const x = Math.random() * (screenWidth - RAINBOW_PIECE_SIZE);

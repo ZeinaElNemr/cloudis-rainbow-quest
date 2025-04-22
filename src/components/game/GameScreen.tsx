@@ -1,12 +1,12 @@
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useGame } from "@/contexts/GameContext";
 import GameCanvas from "./GameCanvas";
 import GameControls from "./GameControls";
 import { useGameLogic } from "@/hooks/useGameLogic";
 import { initializeGame } from "@/services/gameInitializer";
 import { useCollisionDetection } from "@/hooks/useCollisionDetection";
-import { CLOUDI_SPEED, BOOST_MULTIPLIER } from "@/types/gameTypes";
+import { CLOUDI_SIZE, CLOUDI_SPEED, BOOST_MULTIPLIER } from "@/types/gameTypes";
 
 const GameScreen: React.FC = () => {
   const { 
@@ -41,9 +41,12 @@ const GameScreen: React.FC = () => {
   const animationRef = useRef<number>(0);
   
   useEffect(() => {
-    console.log('GameScreen: Initializing game');
+    console.log('GameScreen: Initializing game with', totalRainbowPieces, 'rainbow pieces');
     // Initialize the game
     setGameEntities(initializeGame(totalRainbowPieces));
+    
+    // Reset the player's rainbow pieces count
+    setRainbowPieces(0);
     
     // Set up keyboard controls
     window.addEventListener('keydown', handleKeyDown);
@@ -70,6 +73,7 @@ const GameScreen: React.FC = () => {
   useEffect(() => {
     console.log(`GameScreen: Rainbow pieces ${rainbowPieces}/${totalRainbowPieces}`);
     if (rainbowPieces >= totalRainbowPieces) {
+      console.log("All rainbow pieces collected! Game over with victory");
       setScene("gameOver");
       playGameSound("victory");
     }

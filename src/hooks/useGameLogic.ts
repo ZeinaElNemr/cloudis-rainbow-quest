@@ -1,5 +1,5 @@
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useGame } from '@/contexts/GameContext';
 import { GameEntity, CloudiEntity, CLOUDI_SIZE } from '@/types/gameTypes';
 
@@ -36,6 +36,11 @@ export const useGameLogic = () => {
   const handleKeyUp = (e: KeyboardEvent) => {
     keysPressed.current[e.key] = false;
   };
+
+  // Log when boost state changes
+  useEffect(() => {
+    console.log("Boost state changed:", boosted);
+  }, [boosted]);
 
   return {
     gameEntities,

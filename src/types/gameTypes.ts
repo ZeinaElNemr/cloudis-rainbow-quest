@@ -20,3 +20,5 @@ export const SUNSHINE_SIZE = 40;
 export const WIND_SIZE = 100;
 export const CLOUDI_SPEED = 5;
 export const BOOST_MULTIPLIER = 1.5;
+export const POINTS_PER_RAINBOW = 10;
+export const DEFAULT_LIVES = 3;

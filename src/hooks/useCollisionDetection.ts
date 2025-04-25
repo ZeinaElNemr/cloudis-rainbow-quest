@@ -1,25 +1,49 @@
 
-import { GameEntity, CloudiEntity } from '@/types/gameTypes';
+import { GameEntity, CloudiEntity, POINTS_PER_RAINBOW } from '@/types/gameTypes';
 import { useGame } from '@/contexts/GameContext';
+import { useState, useEffect } from 'react';
 
 export const useCollisionDetection = (
   cloudi: CloudiEntity,
   gameEntities: GameEntity[],
   setBoosted: (boosted: boolean) => void,
-  setGameEntities: (entities: GameEntity[]) => void
+  setGameEntities: React.Dispatch<React.SetStateAction<GameEntity[]>>
 ) => {
   const { 
     setScene, 
     rainbowPieces, 
     setRainbowPieces, 
     settings, 
-    playGameSound 
+    playGameSound,
+    score,
+    setScore,
+    lives,
+    setLives,
+    setGameResult
   } = useGame();
+  
+  const [isInvulnerable, setIsInvulnerable] = useState(false);
+
+  // Turn off invulnerability state after a short period
+  useEffect(() => {
+    let invulnerabilityTimer: NodeJS.Timeout | null = null;
+    
+    if (isInvulnerable) {
+      invulnerabilityTimer = setTimeout(() => {
+        setIsInvulnerable(false);
+      }, 1500); // 1.5 seconds of invulnerability
+    }
+    
+    return () => {
+      if (invulnerabilityTimer) clearTimeout(invulnerabilityTimer);
+    };
+  }, [isInvulnerable]);
 
   const checkCollisions = () => {
     const entitiesToRemove: string[] = [];
-    let shouldEndGame = false;
+    let shouldUpdateLives = false;
     let newRainbowCount = rainbowPieces;
+    let newScore = score;
     
     for (const entity of gameEntities) {
       // Check for collision between cloudi and this entity
@@ -35,16 +59,26 @@ export const useCollisionDetection = (
           console.log(`Rainbow collision - id: ${entity.id}`);
           entitiesToRemove.push(entity.id);
           newRainbowCount += 1;
-          console.log(`New rainbow count: ${newRainbowCount}`);
+          newScore += POINTS_PER_RAINBOW;
+          console.log(`New rainbow count: ${newRainbowCount}, New score: ${newScore}`);
           playGameSound("collect");
           
           if (settings.vibration && navigator.vibrate) {
             navigator.vibrate(100);
           }
         } else if (entity.type === 'storm') {
-          console.log('Storm collision - ending game');
-          playGameSound("storm");
-          shouldEndGame = true;
+          console.log('Storm collision - deducting a life');
+          
+          // Only take damage if not invulnerable
+          if (!isInvulnerable) {
+            shouldUpdateLives = true;
+            playGameSound("storm");
+            setIsInvulnerable(true);
+            
+            if (settings.vibration && navigator.vibrate) {
+              navigator.vibrate([100, 50, 100]); // Stronger vibration pattern for damage
+            }
+          }
         } else if (entity.type === 'sunshine') {
           console.log(`Sunshine collision - id: ${entity.id}`);
           entitiesToRemove.push(entity.id);
@@ -64,22 +98,38 @@ export const useCollisionDetection = (
     
     if (entitiesToRemove.length > 0) {
       console.log(`Removing entities with ids:`, entitiesToRemove);
-      setGameEntities(prevEntities => 
+      setGameEntities((prevEntities) => 
         prevEntities.filter(entity => !entitiesToRemove.includes(entity.id))
       );
     }
     
-    // Update rainbow pieces count outside the loop
-    if (newRainbowCount > rainbowPieces) {
-      console.log(`Setting rainbow pieces to ${newRainbowCount}`);
+    // Update rainbow pieces count and score
+    if (newRainbowCount > rainbowPieces || newScore > score) {
+      console.log(`Setting rainbow pieces to ${newRainbowCount} and score to ${newScore}`);
       setRainbowPieces(newRainbowCount);
+      setScore(newScore);
     }
     
-    if (shouldEndGame) {
-      console.log('Setting scene to gameOver');
+    // Handle life loss
+    if (shouldUpdateLives) {
+      const newLives = lives - 1;
+      console.log(`Setting lives to ${newLives}`);
+      setLives(newLives);
+      
+      if (newLives <= 0) {
+        console.log('No more lives left - ending game with defeat');
+        setGameResult("defeat");
+        setScene("gameOver");
+      }
+    }
+    
+    // Victory condition check
+    if (newRainbowCount >= 7) {
+      console.log('All rainbow pieces collected! Game over with victory');
+      setGameResult("victory");
       setScene("gameOver");
     }
   };
 
-  return { checkCollisions };
+  return { checkCollisions, isInvulnerable };
 };

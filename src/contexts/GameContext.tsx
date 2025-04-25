@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { playSound, playBackgroundMusic, pauseBackgroundMusic, setMusicVolume, setSoundEffectsVolume } from "../utils/soundUtils";
+import { DEFAULT_LIVES } from "@/types/gameTypes";
 
 type GameScene = "start" | "instructions" | "settings" | "game" | "gameOver" | "credits";
 
@@ -24,6 +25,12 @@ type GameContextType = {
   setIsGamePaused: (paused: boolean) => void;
   resetGame: () => void;
   playGameSound: (sound: string) => void;
+  score: number;
+  setScore: (score: number) => void;
+  lives: number;
+  setLives: (lives: number) => void;
+  gameResult: "victory" | "defeat" | null;
+  setGameResult: (result: "victory" | "defeat" | null) => void;
 };
 
 const defaultSettings: SettingsType = {
@@ -42,6 +49,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [gameTime, setGameTime] = useState<number>(0);
   const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
   const [totalRainbowPieces] = useState<number>(7); // Total pieces to collect
+  const [score, setScore] = useState<number>(0);
+  const [lives, setLives] = useState<number>(DEFAULT_LIVES);
+  const [gameResult, setGameResult] = useState<"victory" | "defeat" | null>(null);
 
   // Load settings from localStorage on mount
   useEffect(() => {
@@ -77,11 +87,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (scene === "game") {
         playBackgroundMusic();
       } else if (scene === "gameOver") {
-        playSound("gameOver");
         pauseBackgroundMusic();
+        if (gameResult === "victory") {
+          playSound("victory");
+        } else if (gameResult === "defeat") {
+          playSound("gameOver");
+        }
       }
     }
-  }, [scene, settings.sound]);
+  }, [scene, settings.sound, gameResult]);
 
   // Pause and resume music based on game pause state
   useEffect(() => {
@@ -111,6 +125,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setRainbowPieces(0);
     setGameTime(0);
     setIsGamePaused(false);
+    setScore(0);
+    setLives(DEFAULT_LIVES);
+    setGameResult(null);
   };
 
   const playGameSound = (sound: string) => {
@@ -134,6 +151,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsGamePaused,
         resetGame,
         playGameSound,
+        score,
+        setScore,
+        lives,
+        setLives,
+        gameResult,
+        setGameResult
       }}
     >
       {children}

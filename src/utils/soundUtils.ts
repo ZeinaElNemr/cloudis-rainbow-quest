@@ -20,7 +20,8 @@ export const initializeSounds = () => {
     gameOver: '/sounds/game-over.mp3',
     victory: '/sounds/victory.mp3',
     click: '/sounds/click.mp3',
-    start: '/sounds/start.mp3'
+    start: '/sounds/start.mp3',
+    hit: '/sounds/hit.mp3'  // Added hit sound for damage
   };
   
   // Preload all sound effects

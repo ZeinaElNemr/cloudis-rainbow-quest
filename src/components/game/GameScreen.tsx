@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useGame } from "@/contexts/GameContext";
 import GameCanvas from "./GameCanvas";
 import GameControls from "./GameControls";
@@ -31,7 +31,7 @@ const GameScreen: React.FC = () => {
     handleKeyUp
   } = useGameLogic();
   
-  const { checkCollisions } = useCollisionDetection(
+  const { checkCollisions, isInvulnerable } = useCollisionDetection(
     cloudi,
     gameEntities,
     setBoosted,
@@ -39,6 +39,18 @@ const GameScreen: React.FC = () => {
   );
   
   const animationRef = useRef<number>(0);
+  const [flashEffect, setFlashEffect] = useState(false);
+
+  // Flash effect for damage
+  useEffect(() => {
+    if (isInvulnerable) {
+      setFlashEffect(true);
+      const flashTimer = setTimeout(() => {
+        setFlashEffect(false);
+      }, 300);
+      return () => clearTimeout(flashTimer);
+    }
+  }, [isInvulnerable]);
   
   useEffect(() => {
     console.log('GameScreen: Initializing game with', totalRainbowPieces, 'rainbow pieces');
@@ -70,15 +82,6 @@ const GameScreen: React.FC = () => {
     }
   }, [isGamePaused]);
   
-  useEffect(() => {
-    console.log(`GameScreen: Rainbow pieces ${rainbowPieces}/${totalRainbowPieces}`);
-    if (rainbowPieces >= totalRainbowPieces) {
-      console.log("All rainbow pieces collected! Game over with victory");
-      setScene("gameOver");
-      playGameSound("victory");
-    }
-  }, [rainbowPieces, totalRainbowPieces]);
-
   const startGameLoop = () => {
     const gameLoop = () => {
       if (!isGamePaused) {
@@ -128,11 +131,17 @@ const GameScreen: React.FC = () => {
 
   return (
     <div className="relative h-full w-full overflow-hidden">
+      {/* Damage flash effect overlay */}
+      {flashEffect && (
+        <div className="absolute inset-0 bg-red-500/30 z-10 animate-pulse" />
+      )}
+      
       <GameCanvas
         gameEntities={gameEntities}
         cloudi={cloudi}
         boosted={boosted}
         settings={settings}
+        isInvulnerable={isInvulnerable}
       />
       <GameControls />
     </div>

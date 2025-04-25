@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useGame } from "@/contexts/GameContext";
 import GameCanvas from "./GameCanvas";
 import GameControls from "./GameControls";
@@ -81,10 +81,14 @@ const GameScreen: React.FC = () => {
 
   const startGameLoop = () => {
     const gameLoop = () => {
-      updateGame();
+      if (!isGamePaused) {
+        updateGame();
+        checkCollisions(); // Make sure we check collisions every frame
+      }
       animationRef.current = requestAnimationFrame(gameLoop);
     };
     
+    cancelAnimationFrame(animationRef.current); // Cancel any existing animation frame
     animationRef.current = requestAnimationFrame(gameLoop);
   };
   
@@ -98,9 +102,8 @@ const GameScreen: React.FC = () => {
     if (keysPressed.current['ArrowUp']) dy -= 1;
     if (keysPressed.current['ArrowDown']) dy += 1;
     
-    // Update position and check for collisions
+    // Update position
     updateCloudiPosition(dx, dy);
-    checkCollisions();
   };
   
   const updateCloudiPosition = (dx: number, dy: number) => {

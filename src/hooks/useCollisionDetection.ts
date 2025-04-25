@@ -21,7 +21,7 @@ export const useCollisionDetection = (
     let shouldEndGame = false;
     let newRainbowCount = rainbowPieces;
     
-    gameEntities.forEach(entity => {
+    for (const entity of gameEntities) {
       // Check for collision between cloudi and this entity
       if (
         cloudi.x < entity.x + entity.width &&
@@ -60,11 +60,13 @@ export const useCollisionDetection = (
           entitiesToRemove.push(entity.id);
         }
       }
-    });
+    }
     
     if (entitiesToRemove.length > 0) {
       console.log(`Removing entities with ids:`, entitiesToRemove);
-      setGameEntities(gameEntities.filter(entity => !entitiesToRemove.includes(entity.id)));
+      setGameEntities(prevEntities => 
+        prevEntities.filter(entity => !entitiesToRemove.includes(entity.id))
+      );
     }
     
     // Update rainbow pieces count outside the loop

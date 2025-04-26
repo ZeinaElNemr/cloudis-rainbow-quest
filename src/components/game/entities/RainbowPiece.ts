@@ -1,4 +1,6 @@
 
+import { GameEntity } from '@/types/gameTypes';
+
 interface RainbowPieceProps {
   ctx: CanvasRenderingContext2D;
   entity: GameEntity;

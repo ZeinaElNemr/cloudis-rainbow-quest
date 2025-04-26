@@ -1,4 +1,6 @@
 
+import { GameEntity } from '@/types/gameTypes';
+
 interface WindCurrentProps {
   ctx: CanvasRenderingContext2D;
   entity: GameEntity;

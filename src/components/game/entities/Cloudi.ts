@@ -1,4 +1,6 @@
 
+import { CloudiEntity } from '@/types/gameTypes';
+
 interface CloudiProps {
   ctx: CanvasRenderingContext2D;
   cloudi: CloudiEntity;

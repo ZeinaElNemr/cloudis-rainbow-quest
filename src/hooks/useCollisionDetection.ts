@@ -72,7 +72,7 @@ export const useCollisionDetection = (
           // Only take damage if not invulnerable
           if (!isInvulnerable) {
             shouldUpdateLives = true;
-            playGameSound("storm");
+            playGameSound("hit"); // Play hit sound instead of storm sound
             setIsInvulnerable(true);
             
             if (settings.vibration && navigator.vibrate) {
